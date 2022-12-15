@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet" />
+<!-- Import Materialize CSS -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+<!-- Import Font Wesome -->
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/css/common.css}" />
+<link rel="stylesheet" th:href="@{/css/header.css}" />
+<link rel="stylesheet" th:href="@{/css/footer.css}" />
+<link rel="stylesheet" th:href="@{/css/register_admin.css}" />
+<link rel="stylesheet" th:href="@{/css/login.css}" />
+<link rel="stylesheet" th:href="@{/css/item_list.css}" />
+<link rel="stylesheet" th:href="@{/css/item_detail.css}" />
+<link rel="stylesheet" th:href="@{/css/cart_list.css}" />
+<link rel="stylesheet" th:href="@{/css/order_confirm.css}" />
+<link rel="stylesheet" th:href="@{/css/order_finished.css}" />
+<link rel="stylesheet" th:href="@{/css/responsive.css}" />
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ラクラクトイ</title>
+</head>
+<body>
+	<header>
+		<div class="container">
+			<div class="header">
+				<div class="header-left">
+					<a th:href="@{/}"> <img class="logo"
+						th:src="@{/img_toy/header_logo.png}" />
+					</a>
+				</div>
+				<div class="header-right">
+					<a th:href="@{/}">商品一覧</a> 
+					<a th:href="@{/toInsert}">会員登録</a>
+					<a th:href="@{/shopCart/showCartList}"> <i
+						class="fas fa-shopping-cart"> </i>カート
+					</a>
+					<!-- <span sec:authentication="principal.user.name">山田</span>さんこんにちは！  -->
+					<span sec:authorize="!isAuthenticated()"><a
+						th:href="@{/login/}">ログイン</a></span> <span
+						sec:authorize="isAuthenticated()"><a th:href="@{/logout}">ログアウト</a></span>
+						<a th:href="@{/contact/InsertContact}">お問合わせ</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- search form -->
+	<div class="search-wrapper">
+		<div class="container">
+			<form method="post" class="search-form" th:action="@{/serchItem}">
+				<span th:text="${result}">該当する商品がありません</span> <input type="text"
+					name="name" class="search-name-input" autocomplete="name"
+					list="itemList" />
+				<datalist id="itemList">
+					<option th:each="item:${itemList}" th:value="${item.name}"></option>
+				</datalist>
+				<button class="btn search-btn">検 索</button>
+			</form>
+		</div>
+	</div>
+	<!-- item list -->
+	<div class="item-wrapper">
+		<div class="container">
+			<div class="items">
+				<div class="item" th:each="item : ${itemList}">
+					<div class="item-icon">
+						<img src="../img_toy/1.jpg"
+							th:src="@{/img_toy/} + ${item.imagePath}" />
+					</div>
+					<a href="item_detail.html"
+						th:href="@{/showItemDetail/showItemDetail?id=} + ${item.id}"><span
+						th:text="${item.name}"></span></a><br /> <span class="price">Ｍ</span><span
+						th:text="${#numbers.formatInteger(item.priceM, 2, 'COMMA')}">1,380円(税抜)</span>円<br />
+					<span class="price">Ｌ</span><span
+						th:text="${#numbers.formatInteger(item.priceL, 2, 'COMMA')}">2,380円(税抜)</span>円<br />
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer>
+		<div class="container">
+			<img th:src="@{/img_toy/header_logo.png}" />
+			<p>楽しいおもちゃをあなたにお届け！</p>
+		</div>
+	</footer>
+	<!-- Compiled and minified JavaScript -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+	<!-- jQueryの読み込み -->
+	<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+	<script th:src="@{/js/paginathing.min.js}"></script>
+	<script type="text/javascript">
+		$(function() {
+			$('.items').paginathing({
+				perPage : 9,
+				prevText : '前へ',
+				nextText : '次へ',
+			})
+		});
+	</script>
+</body>
+</html>

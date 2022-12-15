@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet" />
+<!-- Import Materialize CSS -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+<!-- Import Font Wesome -->
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+	rel="stylesheet" />
+<link rel="stylesheet" th:href="@{/css/common.css}" />
+<link rel="stylesheet" th:href="@{/css/header.css}" />
+<link rel="stylesheet" th:href="@{/css/footer.css}" />
+<link rel="stylesheet" th:href="@{/css/register_admin.css}" />
+<link rel="stylesheet" th:href="@{/css/login.css}" />
+<link rel="stylesheet" th:href="@{/css/item_list.css}" />
+<link rel="stylesheet" th:href="@{/css/item_detail.css}" />
+<link rel="stylesheet" th:href="@{/css/cart_list.css}" />
+<link rel="stylesheet" th:href="@{/css/order_confirm.css}" />
+<link rel="stylesheet" th:href="@{/css/order_finished.css}" />
+<link rel="stylesheet" th:href="@{/css/responsive.css}" />
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ラクラクトイ</title>
+</head>
+<body>
+	<header>
+		<div class="container">
+			<div class="header">
+				<div class="header-left">
+					<a th:href="@{/}"> <img class="logo"
+						th:src="@{/img_toy/header_logo.png}" />
+					</a>
+				</div>
+
+				<div class="header-right">
+					<a th:href="@{/}">商品一覧</a> <a th:href="@{/toInsert}">会員登録</a>
+					<a th:href="@{/shopCart/showCartList}"><i
+						class="fas fa-shopping-cart"></i>カート</a> <span sec:authorize="!isAuthenticated()"><a
+						th:href="@{/login/}">ログイン</a></span> <span
+						sec:authorize="isAuthenticated()"><a th:href="@{/logout}">ログアウト</a></span>
+					<a th:href="@{/contact/InsertContact}">お問合わせ</a>
+					<!-- end top-wrapper -->
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="top-wrapper">
+
+		<div class="container">
+			<h1 class="page-title">ショッピングカート</h1>
+			<!-- table -->
+			<div class="row">
+				<table class="table table-striped item-list-table">
+					<thead>
+						<tr>
+							<th>
+								<div class="text-center">商品名</div>
+							</th>
+							<th>
+								<div class="text-center">サイズ、価格(税抜)、数量</div>
+							</th>
+							<th>
+								<div class="text-center">トッピング、価格(税抜)</div>
+							</th>
+							<th>
+								<div class="text-center">小計</div>
+							</th>
+						</tr>
+						<tr th:each="orderItem:${order.orderItemList}">
+
+							<td class="cart-table-th"><img
+								src="../static/img_pizza/1.jpg"
+								th:src="@{/img_toy/}+${orderItem.item.imagePath}"
+								class="img-responsive img-rounded item-img-center" width="70"
+								height="70" />
+							<p th:text="${orderItem.item.name}"></p></td>
+							<td><span th:text="${orderItem.size}">M</span>サイズ<br>
+							<span th:text="${orderItem.item.priceM}"></span>円<br>
+							<span th:text=${orderItem.quantity}></span>個</td>
+
+							<td th:each="orderTopping: ${orderItem.orderToppingList}">
+								<ul th:each="topping : ${orderTopping.topping}">
+									<li th:text="${topping.name}"></li>
+								</ul> <span th:text="${orderTopping.topping.priceM}"></span>円
+							</td>
+							<td><div class="text-center">3,280円</div></td>
+							<td>
+								<form th:action="@{/shopCart/deleteItem}" method="POST">
+									<input type="hidden" th:value=${orderItem.id}
+										name="orderItemId">
+
+									<button class="btn">
+										<span>削除</span>
+									</button>
+								</form>
+							</td>
+						</tr>
+					</thead>
+				</table>
+			</div>
+
+			<div class="row cart-total-price">
+				<div>
+					消費税：<span th:text="${#numbers.formatInteger(tax, 1, 'COMMA')}"></span>円
+				</div>
+				<div>
+					ご注文金額合計：<span
+						th:text="${#numbers.formatInteger(totalPrice, 1, 'COMMA')}"></span>円
+					(税込)
+				</div>
+			</div>
+			<div class="row order-confirm-btn">
+
+				<form th:action="@{/orderConfirm/orderConfirm}" method="post">
+					<input type="hidden" th:value="${order.Id}" name="orderId">
+					<button class="btn" onclick="location.href='order_confirm.html'">
+						<span>注文に進む</span>
+					</button>
+				</form>
+			</div>
+		</div>
+		<!-- end container -->
+	</div>
+	<!-- end top-wrapper -->
+	<footer>
+		<div class="container">
+			<img th:src="@{/img_toy/header_logo.png}" />
+			<p>楽しいおもちゃをあなたにお届け！</p>
+		</div>
+	</footer>
+	<!-- Compiled and minified JavaScript -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
